@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>초등 엑셀 탐험대 : MBTI 캐릭터 찾기</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Jua & Press Start 2P for Retro Vibes -->
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- FontAwesome for cute icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Jua', sans-serif;
+            background: linear-gradient(135deg, #E6E1FF 0%, #D4F0FF 100%);
+            background-attachment: fixed;
+            user-select: none;
+        }
+
+        .pixel-font {
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        /* Retro Border and Shadow Effects */
+        .retro-border {
+            border: 4px solid #1e1b29;
+            box-shadow: 5px 5px 0px 0px #1e1b29;
+        }
+
+        .retro-button-purple {
+            background-color: #CBBFFF;
+            border: 4px solid #1e1b29;
+            box-shadow: 4px 4px 0px 0px #1e1b29;
+            transition: all 0.1s ease;
+        }
+        .retro-button-purple:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #1e1b29;
+            background-color: #B2A2FF;
+        }
+        .retro-button-purple:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px 0px #1e1b29;
+        }
+
+        .retro-button-blue {
+            background-color: #B9E9FF;
+            border: 4px solid #1e1b29;
+            box-shadow: 4px 4px 0px 0px #1e1b29;
+            transition: all 0.1s ease;
+        }
+        .retro-button-blue:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #1e1b29;
+            background-color: #8FD8FF;
+        }
+        .retro-button-blue:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px 0px #1e1b29;
+        }
+
+        /* Excel grid simulation */
+        .excel-grid {
+            background-image: 
+                linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+                linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+            background-size: 40px 30px;
+        }
+
+        /* Simple animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar for Retro feeling */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #E6E1FF;
+            border-left: 4px solid #1e1b29;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9F86FF;
+            border: 3px solid #E6E1FF;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-lg bg-white retro-border rounded-xl overflow-hidden relative flex flex-col min-h-[620px]">
+        <!-- Top Bar (Mac/Windows window style) -->
+        <div class="bg-[#1e1b29] text-white px-4 py-2.5 flex justify-between items-center select-none">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-file-excel text-[#107c41] text-lg bg-white p-1 rounded"></i>
+                <span class="text-sm tracking-wide font-bold">EXCEL_HERO_TEST.EXE</span>
+            </div>
+            <div class="flex gap-1.5">
+                <div class="w-3.5 h-3.5 bg-yellow-400 rounded-full border-2 border-black"></div>
+                <div class="w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-black"></div>
+                <div class="w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-black cursor-pointer" onclick="resetTest()"></div>
+            </div>
+        </div>
+
+        <!-- Progress Indicator & Main Screen Wrapper -->
+        <div class="p-5 flex-1 flex flex-col justify-between relative bg-[#FAF9FF]">
+
+            <!-- STAR SCREEN / INTRO -->
+            <div id="intro-screen" class="flex-1 flex flex-col justify-between text-center py-4">
+                <div class="my-auto space-y-6">
+                    <!-- Icon / Graphics -->
+                    <div class="float-animation flex justify-center items-center gap-2 mb-2">
+                        <div class="w-16 h-16 bg-[#CBBFFF] retro-border rounded-xl flex items-center justify-center text-4xl text-white">📊</div>
+                        <div class="w-20 h-20 bg-[#B9E9FF] retro-border rounded-xl flex items-center justify-center text-5xl">👾</div>
+                        <div class="w-16 h-16 bg-[#CBBFFF] retro-border rounded-xl flex items-center justify-center text-4xl">💾</div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-xs text-[#9F86FF] tracking-widest uppercase font-bold pixel-font">★ LEVEL 1: ICEBREAKER ★</p>
+                        <h1 class="text-3xl md:text-4xl text-[#1e1b29] leading-tight font-extrabold px-2">
+                            초등 엑셀 탐험대<br>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#9F86FF] to-[#64C4FF]">나의 MBTI 캐릭터</span>
+                        </h1>
+                        <p class="text-gray-600 text-sm md:text-base mt-2 px-4 leading-relaxed">
+                            친구들 안녕! 신나는 엑셀 나라로 떠나기 전에,<br>
+                            나와 가장 어울리는 엑셀 캐릭터를 찾아볼까요? 🚀
+                        </p>
+                    </div>
+
+                    <!-- Audio toggle notice -->
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-500 mx-auto">
+                        <i class="fa-solid fa-volume-high"></i>
+                        <span>배경 효과음이 포함되어 있습니다!</span>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <button onclick="startTest()" class="w-full py-4 text-xl font-bold text-[#1e1b29] retro-button-purple rounded-xl flex items-center justify-center gap-3">
+                        <span class="pixel-font text-base animate-pulse">▶</span> 탐험 시작하기!
+                    </button>
+                    <p class="text-xs text-gray-400 mt-3">※ 약 10개의 쉬운 질문으로 약 2분 소요돼요!</p>
+                </div>
+            </div>
+
+
+            <!-- QUESTION SCREEN -->
+            <div id="question-screen" class="hidden flex-1 flex flex-col justify-between">
+                <div>
+                    <!-- Step Progress -->
+                    <div class="flex justify-between items-center mb-4">
+                        <span id="question-number-text" class="text-xs font-bold text-[#9F86FF] tracking-wider uppercase bg-[#E6E1FF] px-3 py-1 rounded-full border-2 border-[#1e1b29]">
+                            질문 1 / 12
+                        </span>
+                        <div class="flex items-center gap-1">
+                            <span class="text-xs font-bold text-gray-500">성취도:</span>
+                            <span id="progress-percent" class="text-xs font-bold text-[#64C4FF] pixel-font">0%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar (Excel Style Columns) -->
+                    <div class="w-full h-5 bg-white border-4 border-[#1e1b29] rounded-lg overflow-hidden flex mb-6">
+                        <div id="progress-bar" class="h-full bg-gradient-to-r from-[#CBBFFF] to-[#B9E9FF] transition-all duration-300" style="width: 0%"></div>
+                    </div>
+
+                    <!-- Question Card -->
+                    <div class="bg-white retro-border p-5 rounded-xl min-h-[140px] flex items-center justify-center text-center relative mb-6">
+                        <div class="absolute -top-3.5 left-4 px-2 py-0.5 bg-[#1e1b29] text-white text-[10px] rounded pixel-font uppercase">
+                            Excel_Formula_Q
+                        </div>
+                        <p id="question-text" class="text-lg md:text-xl font-bold leading-relaxed text-gray-800">
+                            여기에 질문 내용이 노출됩니다.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Answer Options -->
+                <div class="space-y-3.5 mb-2">
+                    <button id="btn-option-a" onclick="selectAnswer('A')" class="w-full p-4 text-left font-bold text-[#1e1b29] retro-button-purple rounded-xl min-h-[80px] flex items-center gap-4">
+                        <div class="w-8 h-8 rounded bg-white text-black border-2 border-black flex items-center justify-center font-bold text-sm shrink-0">A</div>
+                        <span id="text-option-a" class="text-sm md:text-base leading-snug">첫번째 답변 예시입니다.</span>
+                    </button>
+                    
+                    <button id="btn-option-b" onclick="selectAnswer('B')" class="w-full p-4 text-left font-bold text-[#1e1b29] retro-button-blue rounded-xl min-h-[80px] flex items-center gap-4">
+                        <div class="w-8 h-8 rounded bg-white text-black border-2 border-black flex items-center justify-center font-bold text-sm shrink-0">B</div>
+                        <span id="text-option-b" class="text-sm md:text-base leading-snug">두번째 답변 예시입니다.</span>
+                    </button>
+                </div>
+
+                <!-- Back navigation -->
+                <div class="flex justify-start mt-2">
+                    <button id="btn-back" onclick="goBack()" class="text-xs text-gray-500 hover:text-gray-800 flex items-center gap-1.5 px-3 py-1.5 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fa-solid fa-arrow-left"></i> 이전 질문으로
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- RESULT SCREEN -->
+            <div id="result-screen" class="hidden flex-1 flex flex-col justify-between">
+                <div class="text-center space-y-4">
+                    <p class="text-xs text-[#9F86FF] tracking-widest uppercase font-bold pixel-font animate-bounce">🎉 분석이 끝났어요! 🎉</p>
+                    
+                    <!-- Result Character Badge -->
+                    <div class="inline-flex flex-col items-center">
+                        <div id="result-avatar" class="w-24 h-24 bg-[#E6E1FF] retro-border rounded-2xl flex items-center justify-center text-5xl mb-2 float-animation">
+                            👾
+                        </div>
+                        <span id="result-mbti-code" class="pixel-font text-xs bg-[#1e1b29] text-white px-3 py-1 rounded-full mb-1">
+                            MBTI
+                        </span>
+                        <h2 id="result-title" class="text-2xl font-black text-gray-800">
+                            계획적인 꼼꼼 셀 거북이
+                        </h2>
+                    </div>
+
+                    <!-- Beautiful simulated retro EXCEL sheet -->
+                    <div class="retro-border bg-white rounded-lg overflow-hidden text-left text-xs mb-4">
+                        <!-- Excel header tab -->
+                        <div class="bg-gray-100 border-b-2 border-[#1e1b29] p-1.5 flex items-center gap-2 text-[10px] text-gray-500">
+                            <span class="bg-[#107c41] text-white px-1.5 py-0.5 rounded font-bold">Sheet1</span>
+                            <span>성격 분석 데이터 표</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-12 bg-gray-50 border-b border-gray-300 font-mono text-[10px] text-center text-gray-500">
+                            <div class="col-span-1 border-r border-gray-300 py-1"></div>
+                            <div class="col-span-3 border-r border-gray-300 py-1 font-bold">성격구분 (A)</div>
+                            <div class="col-span-5 border-r border-gray-300 py-1 font-bold">비율 차트 (B)</div>
+                            <div class="col-span-3 py-1 font-bold">나의 수치 (C)</div>
+                        </div>
+
+                        <!-- Row 1: E vs I -->
+                        <div class="grid grid-cols-12 border-b border-gray-200 hover:bg-violet-50">
+                            <div class="col-span-1 border-r border-gray-200 bg-gray-50 text-center py-1.5 font-mono text-[10px] text-gray-400">1</div>
+                            <div class="col-span-3 border-r border-gray-200 px-2 py-1.5 flex items-center justify-between">
+                                <span class="font-bold">E <span class="text-[9px] text-gray-400">외향</span></span>
+                                <span class="text-gray-400">vs</span>
+                                <span class="font-bold">I <span class="text-[9px] text-gray-400">내향</span></span>
+                            </div>
+                            <div class="col-span-5 border-r border-gray-200 px-2 py-1.5 flex items-center">
+                                <div class="w-full h-3 bg-gray-100 rounded-sm overflow-hidden flex border border-gray-300">
+                                    <div id="chart-e" class="h-full bg-[#CBBFFF]" style="width: 50%"></div>
+                                    <div id="chart-i" class="h-full bg-[#B9E9FF]" style="width: 50%"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-3 px-2 py-1.5 text-right font-mono" id="score-ei-text">E 50% / I 50%</div>
+                        </div>
+
+                        <!-- Row 2: S vs N -->
+                        <div class="grid grid-cols-12 border-b border-gray-200 hover:bg-violet-50">
+                            <div class="col-span-1 border-r border-gray-200 bg-gray-50 text-center py-1.5 font-mono text-[10px] text-gray-400">2</div>
+                            <div class="col-span-3 border-r border-gray-200 px-2 py-1.5 flex items-center justify-between">
+                                <span class="font-bold">S <span class="text-[9px] text-gray-400">감각</span></span>
+                                <span class="text-gray-400">vs</span>
+                                <span class="font-bold">N <span class="text-[9px] text-gray-400">직관</span></span>
+                            </div>
+                            <div class="col-span-5 border-r border-gray-200 px-2 py-1.5 flex items-center">
+                                <div class="w-full h-3 bg-gray-100 rounded-sm overflow-hidden flex border border-gray-300">
+                                    <div id="chart-s" class="h-full bg-[#CBBFFF]" style="width: 50%"></div>
+                                    <div id="chart-n" class="h-full bg-[#B9E9FF]" style="width: 50%"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-3 px-2 py-1.5 text-right font-mono" id="score-sn-text">S 50% / N 50%</div>
+                        </div>
+
+                        <!-- Row 3: T vs F -->
+                        <div class="grid grid-cols-12 border-b border-gray-200 hover:bg-violet-50">
+                            <div class="col-span-1 border-r border-gray-200 bg-gray-50 text-center py-1.5 font-mono text-[10px] text-gray-400">3</div>
+                            <div class="col-span-3 border-r border-gray-200 px-2 py-1.5 flex items-center justify-between">
+                                <span class="font-bold">T <span class="text-[9px] text-gray-400">사고</span></span>
+                                <span class="text-gray-400">vs</span>
+                                <span class="font-bold">F <span class="text-[9px] text-gray-400">감정</span></span>
+                            </div>
+                            <div class="col-span-5 border-r border-gray-200 px-2 py-1.5 flex items-center">
+                                <div class="w-full h-3 bg-gray-100 rounded-sm overflow-hidden flex border border-gray-300">
+                                    <div id="chart-t" class="h-full bg-[#CBBFFF]" style="width: 50%"></div>
+                                    <div id="chart-f" class="h-full bg-[#B9E9FF]" style="width: 50%"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-3 px-2 py-1.5 text-right font-mono" id="score-tf-text">T 50% / F 50%</div>
+                        </div>
+
+                        <!-- Row 4: J vs P -->
+                        <div class="grid grid-cols-12 hover:bg-violet-50">
+                            <div class="col-span-1 border-r border-gray-200 bg-gray-50 text-center py-1.5 font-mono text-[10px] text-gray-400">4</div>
+                            <div class="col-span-3 border-r border-gray-200 px-2 py-1.5 flex items-center justify-between">
+                                <span class="font-bold">J <span class="text-[9px] text-gray-400">판단</span></span>
+                                <span class="text-gray-400">vs</span>
+                                <span class="font-bold">P <span class="text-[9px] text-gray-400">인식</span></span>
+                            </div>
+                            <div class="col-span-5 border-r border-gray-200 px-2 py-1.5 flex items-center">
+                                <div class="w-full h-3 bg-gray-100 rounded-sm overflow-hidden flex border border-gray-300">
+                                    <div id="chart-j" class="h-full bg-[#CBBFFF]" style="width: 50%"></div>
+                                    <div id="chart-p" class="h-full bg-[#B9E9FF]" style="width: 50%"></div>
+                                </div>
+                            </div>
+                            <div class="col-span-3 px-2 py-1.5 text-right font-mono" id="score-jp-text">J 50% / P 50%</div>
+                        </div>
+                    </div>
+
+                    <!-- MBTI Personality details -->
+                    <div class="bg-[#F3EFFF] retro-border p-4 rounded-xl text-left space-y-3">
+                        <h4 class="font-black text-[#1e1b29] flex items-center gap-1.5">
+                            <span class="text-base">✨</span> 어떤 친구인가요?
+                        </h4>
+                        <p id="result-desc" class="text-sm text-gray-700 leading-relaxed break-keep">
+                            계획 세우는 것을 잘하며 친구를 잘 돕고 꼼꼼하게 실수를 체크하는 친구입니다.
+                        </p>
+                        
+                        <div class="border-t border-purple-200 pt-2.5">
+                            <h4 class="font-black text-[#107c41] flex items-center gap-1.5 text-xs">
+                                <i class="fa-solid fa-file-excel"></i> 이 친구를 위한 맞춤형 엑셀 꿀팁!
+                            </h4>
+                            <p id="result-excel-tip" class="text-xs text-gray-600 mt-1 leading-relaxed">
+                                엑셀로 일기장을 만들거나 스케줄러를 정리하면 금방 마스터할 거예요!
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Compatibility Row -->
+                    <div class="grid grid-cols-2 gap-3 text-left">
+                        <div class="border-2 border-[#1e1b29] rounded-xl p-3 bg-green-50">
+                            <p class="text-[10px] font-black text-green-700 uppercase tracking-wider">꿀조합 엑셀 단짝 👍</p>
+                            <p id="compatibility-best" class="text-xs font-bold text-gray-800 mt-0.5">상상력 대장</p>
+                        </div>
+                        <div class="border-2 border-[#1e1b29] rounded-xl p-3 bg-rose-50">
+                            <p class="text-[10px] font-black text-rose-700 uppercase tracking-wider">공부할 때 찰떡 🤝</p>
+                            <p id="compatibility-worst" class="text-xs font-bold text-gray-800 mt-0.5">꼼꼼 대마왕</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="space-y-3 mt-6">
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="copyShareText()" class="py-3 px-2 font-bold text-[#1e1b29] retro-button-blue rounded-xl flex items-center justify-center gap-2 text-sm">
+                            <i class="fa-solid fa-copy"></i> 결과 복사하기
+                        </button>
+                        <button onclick="resetTest()" class="py-3 px-2 font-bold text-white bg-gray-700 border-4 border-black hover:bg-gray-800 rounded-xl flex items-center justify-center gap-2 text-sm transition-transform active:scale-95">
+                            <i class="fa-solid fa-rotate-right"></i> 다시 해보기
+                        </button>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-[11px] text-[#9F86FF] font-black">
+                            "이 성격 분석표 데이터를 사용해서 곧 재미있는 엑셀 수업을 해볼 거예요!"
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Alert toast for copies and information notifications -->
+    <div id="toast" class="fixed bottom-5 px-5 py-3 bg-[#1e1b29] text-white rounded-lg border-2 border-white shadow-lg text-sm font-bold z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2">
+        <i class="fa-solid fa-check text-green-400"></i>
+        <span id="toast-message">결과가 복사되었습니다!</span>
+    </div>
+
+    <script>
+        // Retro Web Audio SFX Helper
+        const playSound = (type) => {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                if (type === 'click') {
+                    // Quick classic UI click sound
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.1);
+                } else if (type === 'select') {
+                    // Playful jumping retro sound
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(300, ctx.currentTime);
+                    osc.frequency.setValueAtTime(600, ctx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.2);
+                } else if (type === 'fanfare') {
+                    // Retro game stage completed fanfare
+                    const notes = [261.63, 329.63, 392.00, 523.25, 659.25]; // C E G C E
+                    notes.forEach((freq, idx) => {
+                        const noteOsc = ctx.createOscillator();
+                        const noteGain = ctx.createGain();
+                        noteOsc.type = 'square';
+                        noteOsc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.08);
+                        noteGain.gain.setValueAtTime(0.06, ctx.currentTime + idx * 0.08);
+                        noteGain.gain.linearRampToValueAtTime(0.005, ctx.currentTime + idx * 0.08 + 0.15);
+                        noteOsc.connect(noteGain);
+                        noteGain.connect(ctx.destination);
+                        noteOsc.start(ctx.currentTime + idx * 0.08);
+                        noteOsc.stop(ctx.currentTime + idx * 0.08 + 0.15);
+                    });
+                }
+            } catch (e) {
+                console.warn('Audio play failed', e);
+            }
+        };
+
+        // MBTI Questions data - tailored for Korean elementary school students
+        const questions = [
+            // E vs I (1-3)
+            {
+                q: "새 학년 첫날! 내 옆자리에 새로 앉은 짝꿍에게 나는?",
+                a: "🙋‍♂️ \"안녕! 너 이름이 뭐야?\" 먼저 웃으면서 말을 건다.",
+                b: "👀 짝꿍이 먼저 말을 걸어줄 때까지 두근두근 조용히 기다린다.",
+                type: "EI", valueA: "E", valueB: "I"
+            },
+            {
+                q: "신나는 주말이 왔을 때, 나의 완벽한 주말 계획은?",
+                a: "🎡 친구들과 바깥에서 신나게 뛰어놀거나 놀이공원에 가고 싶다!",
+                b: "🏡 편안한 내 방에서 좋아하는 만화책이나 유튜브, 게임을 하고 싶다!",
+                type: "EI", valueA: "E", valueB: "I"
+            },
+            {
+                q: "학교 쉬는 시간 종이 쳤을 때 나의 행동은?",
+                a: "🏃 복도로 쏜살같이 뛰어나가 다른 반 친구들과 왁자지껄 떠든다.",
+                b: "✏️ 내 자리에 앉아서 일기를 쓰거나 조용히 좋아하는 책을 읽는다.",
+                type: "EI", valueA: "E", valueB: "I"
+            },
+            // S vs N (4-6)
+            {
+                q: "미술 시간, 하늘을 나는 상상의 미래 자동차를 그리라고 한다면?",
+                a: "🚗 하늘을 나는 모터, 안전벨트, 날개가 달린 실제 같은 기계 자동차를 그린다.",
+                b: "🍭 사탕 연기를 뿜으며 동물 친구들을 가득 싣고 날아다니는 상상 속 자동차를 그린다.",
+                type: "SN", valueA: "S", valueB: "N"
+            },
+            {
+                q: "선생님이 수업 중에 \"만약에 너희가 하늘을 날 수 있다면?\" 질문하시면?",
+                a: "🤔 \"사람은 진짜 날개가 없어서 못 날 텐데...\" 현실적으로 생각한다.",
+                b: "☁️ \"구름 위에서 구름 솜사탕 뜯어먹고 비행기랑 가위바위보 해야지!\" 상상한다.",
+                type: "SN", valueA: "S", valueB: "N"
+            },
+            {
+                q: "선물로 멋진 레고 블록 장난감을 받았을 때 나의 조립 방법은?",
+                a: "📖 레고 박스 설명서의 1번 단계부터 튼튼하고 똑같이 순서대로 맞춘다.",
+                b: "🛠️ 설명서는 저 멀리 치우고, 내 마음대로 새로운 로봇을 뚝딱 만들어낸다.",
+                type: "SN", valueA: "S", valueB: "N"
+            },
+            // T vs F (7-9)
+            {
+                q: "친구들과 단체 보드게임을 하다가 누군가 실수를 해서 졌을 때!",
+                a: "💡 \"다음 판엔 그 실수를 안 하려면 이 순서로 카드를 내야 해!\" 분석해 준다.",
+                b: "💖 \"실수해도 괜찮아! 게임인데 어때, 우리 다 같이 즐거웠잖아!\" 토닥여 준다.",
+                type: "TF", valueA: "T", valueB: "F"
+            },
+            {
+                q: "친구가 시험을 잘 못 보고 너무 속상해서 울고 있다...",
+                a: "🧐 \"몇 점 맞았어? 어떤 문제를 왜 틀렸는지 확인해야 다음엔 안 틀려!\"",
+                b: "🥺 \"아이고 속상해... 공부 열심히 했는데 마음 아프겠다...\" 같이 울먹인다.",
+                type: "TF", valueA: "T", valueB: "F"
+            },
+            {
+                q: "가족이 \"오늘 너무 바쁘고 힘든 하루였어\"라고 고단해한다면?",
+                a: "🔎 \"오늘 무슨 일이 왜 그렇게 바빴어?\"라고 구체적으로 물어본다.",
+                b: "🧸 \"오늘 고생했어... 내가 등 두드려줄까?\" 안마를 해드리며 꼭 안아준다.",
+                type: "TF", valueA: "T", valueB: "F"
+            },
+            // J vs P (10-12)
+            {
+                q: "기다리고 기다리던 방학이 시작될 때 나의 행동은?",
+                a: "📅 달력이나 공책에 '독서 1시간, 엑셀 공부 30분' 하루 일정표를 멋지게 만든다.",
+                b: "😎 계획은 머리 아파! 일단 자유롭게 푹 자고 그때그때 하고 싶은 것을 즐긴다.",
+                type: "JP", valueA: "J", valueB: "P"
+            },
+            {
+                q: "학교 갈 준비를 하기 위해 책가방을 챙기는 내 모습은?",
+                a: "🎒 알림장을 보고 필요한 책과 숙제를 전날 밤에 딱 순서대로 다 넣어둔다.",
+                b: "⚡ 아침에 허둥지둥 책을 쓸어 담거나, 필요한 건 사물함에서 바로 찾아 쓴다.",
+                type: "JP", valueA: "J", valueB: "P"
+            },
+            {
+                q: "친구와 주말에 만나기로 약속을 잡았다!",
+                a: "⏰ \"오후 2시에 로봇 놀이터에서 만나서 떡볶이 먹으러 가자!\" 미리 완벽 설계!",
+                b: "🛸 \"주말 오후에 일단 만나서 어디 갈지는 그때 정하자!\" 자유롭게 룰루랄라!",
+                type: "JP", valueA: "J", valueB: "P"
+            }
+        ];
+
+        // MBTI Result Profiles custom-made for elementary students in Excel context
+        const mbtiProfiles = {
+            "ISTJ": {
+                avatar: "🐢",
+                title: "계획적인 꼼꼼 셀 거북이",
+                desc: "약속과 계획을 최고로 소중히 여기고 책임감이 강한 친구예요! 엉뚱한 실수를 하는 법이 없어 선생님들이 아주 믿음직스러워합니다.",
+                tip: "데이터 정리가 매우 꼼꼼한 당신! 엑셀의 정렬 기능이나 표 작성을 마스터하면 최고의 전교 1등 스케줄러를 만들 수 있을 거예요.",
+                best: "상상력 대장 시트 몽상가", worst: "알록달록 디자인 셀 카멜레온"
+            },
+            "ISFJ": {
+                avatar: "🧚",
+                title: "다정한 수식 수호 요정",
+                desc: "조용하고 차분하며, 친구들의 고민을 정성껏 들어주는 수호요정 같은 친구예요. 주변 사람들을 뒤에서 묵묵하게 가장 잘 챙겨줍니다.",
+                tip: "주변 친구들을 돕고 지켜주는 수식을 좋아할 거예요! 엑셀의 'SUM'이나 'AVERAGE' 같은 편리한 수식을 금방 배워 친구들을 도와줄 수 있답니다.",
+                best: "모두를 이끄는 그래프 리더", worst: "아이디어 뱅크 피벗 원숭이"
+            },
+            "INFJ": {
+                avatar: "🔮",
+                title: "마음을 읽는 차트 마술사",
+                desc: "생각이 깊고 상상력이 풍부하며 친구들의 숨겨진 속상한 감정까지 귀신같이 다 맞춰 위로해 주는 부드럽고 따뜻한 친구입니다.",
+                tip: "숫자 뒤에 숨은 우정과 마음을 볼 줄 알아요! 엑셀을 배울 때 데이터를 멋진 원형 차트나 꺾은선 차트로 변형하면 최고의 무대를 보여줄 수 있어요.",
+                best: "완벽주의 마스터 매크로 사자", worst: "도전적인 단축키 전사"
+            },
+            "INTJ": {
+                avatar: "📐",
+                title: "미래 설계자 매크로 설계자",
+                desc: "머리가 아주 좋고 스스로 해결하기를 좋아하는 똑똑이 친구예요! 한 단계 한 단계 전략을 세워서 퍼즐을 푸는 것에 엄청난 재미를 느낍니다.",
+                tip: "복잡한 프로그램도 당신이라면 문제없어요. 나중에 마우스를 쓰지 않고 키보드로만 조종하는 매크로(Macro)나 수식의 신이 될 가능성이 100%!",
+                best: "열정 가득 스프레드시트 나비", worst: "흥겨운 프레젠테이션 돌고래"
+            },
+            "ISTP": {
+                avatar: "🦎",
+                title: "뚝딱뚝딱 버그 해결사 도마뱀",
+                desc: "손재주가 많고 물건을 조립하거나 뜯어보는 것을 좋아해요! 위기 상황에서도 긴장하지 않고 차분하고 조용하게 문제를 해결합니다.",
+                tip: "엑셀 수식 에러나 빨간 줄 경고를 만났을 때 흥분하지 않고 조용히 해결책을 찾아냅니다. 당신은 프로그래밍과 문제 수리에 타고난 능력이 있어요.",
+                best: "친절한 칭찬 시트 다람쥐", worst: "모두를 이끄는 그래프 리더"
+            },
+            "ISFP": {
+                avatar: "🎨",
+                title: "알록달록 디자인 셀 카멜레온",
+                desc: "조용하고 착하며, 예술적인 감각이 뛰어나 예쁜 소품이나 색 조합을 좋아하는 친구예요! 갈등을 아주 싫어하고 평화를 사랑해요.",
+                tip: "하얀 엑셀 시트에 예쁜 파스텔 톤 색을 채워 넣는 셀 디자인의 마법사! 예쁜 표 테두리와 배경색 채우기 기능으로 눈이 편해지는 시트를 만듭니다.",
+                best: "카리스마 대장 엑셀 반장", worst: "계획적인 꼼꼼 셀 거북이"
+            },
+            "INFP": {
+                avatar: "🦄",
+                title: "상상력 대장 시트 몽상가",
+                desc: "마음이 아주 부드럽고 예술과 판타지를 좋아하는 꿈꾸는 아이예요! 따뜻하고 긍정적인 말로 상처받은 친구의 눈물을 닦아줍니다.",
+                tip: "창의력 넘치는 이야기 시트를 만들 수 있어요! 시트에 그림 삽입하기나 귀여운 아이콘(이모지)을 활용해 우주 이야기나 나만의 동화 엑셀을 꾸며봐요.",
+                best: "계획적인 꼼꼼 셀 거북이", worst: "카리스마 대장 엑셀 반장"
+            },
+            "INTP": {
+                avatar: "🧪",
+                title: "호기심 가득 함수 과학자",
+                desc: "질문하기를 좋아하고 왜 그렇게 되는지 이유를 꼭 알아야 직성이 풀리는 꼬마 아인슈타인이에요! 흥미 있는 분야는 끝까지 파고들어요.",
+                tip: "엑셀에 수많은 '함수(Function)'들이 존재한다는 소식에 눈이 번쩍 뜨일 거예요! 'IF'나 'VLOOKUP' 같은 마법 함수를 파헤치면 금세 탐험을 완료합니다.",
+                best: "친절한 칭찬 시트 다람쥐", worst: "카리스마 대장 엑셀 반장"
+            },
+            "ESTP": {
+                avatar: "🐆",
+                title: "도전적인 단축키 전사",
+                desc: "에너지가 넘치고 자신감이 뿜뿜하며, 운동장이나 야외 활동을 지배하는 멋진 대장님 친구예요! 어떤 일이든 주저하지 않고 몸으로 먼저 부딪힙니다.",
+                tip: "성격 급한 당신에게 딱 맞는 엑셀 비법은 단축키! 'Ctrl+C', 'Ctrl+V'는 물론 마우스를 쓰지 않는 폭풍 단축키를 연습하면 반에서 가장 빠르게 끝낼걸요?",
+                best: "마음을 읽는 차트 마술사", worst: "완벽주의 마스터 매크로 사자"
+            },
+            "ESFP": {
+                avatar: "🐬",
+                title: "흥겨운 프레젠테이션 돌고래",
+                desc: "반 분위기를 밝게 만드는 인간 비타민 친구예요! 춤, 노래, 이야기하기를 좋아해 친구들 앞에 서거나 웃기는 것을 가장 좋아합니다.",
+                tip: "내가 만든 멋진 엑셀 결과물을 사람들에게 신나게 발표할 수 있는 최고의 발표자! 시트 애니메이션이나 재미있는 그림을 넣어 모두를 웃기게 만듭니다.",
+                best: "미래 설계자 매크로 설계자", worst: "계획적인 꼼꼼 셀 거북이"
+            },
+            "ENFP": {
+                avatar: "🦋",
+                title: "열정 가득 스프레드시트 나비",
+                desc: "매일매일 반짝이는 아이디어가 마구 쏟아지는 인기쟁이 친구예요! 친구들과 수다 떨며 즐거운 상상 속에 사는 것이 최고의 행복입니다.",
+                tip: "상상 속의 아이디어를 엑셀로 정리해 보세요. 친구들의 생일 데이터 표, 좋아하는 게임 능력치 분석표 등을 재미있게 정리해 단톡방에 퍼뜨릴 거예요!",
+                best: "미래 설계자 매크로 설계자", worst: "계획적인 꼼꼼 셀 거북이"
+            },
+            "ENTP": {
+                avatar: "🐒",
+                title: "아이디어 뱅크 피벗 원숭이",
+                desc: "말을 아주 조리 있게 잘하고 장난꾸러기 같은 면이 가득한 발명가 스타일이에요! 재미있는 도전을 좋아하며 엉뚱하고 기발한 질문을 잘합니다.",
+                tip: "수천 가지 데이터를 요리조리 마음대로 합치고 섞어주는 엑셀의 '피벗테이블(Pivot Table)'을 보면 심장이 요동칠걸요? 변형하는 재미에 밤을 새울 거예요.",
+                best: "친절한 칭찬 시트 다람쥐", worst: "다정한 수식 수호 요정"
+            },
+            "ESTJ": {
+                avatar: "🦁",
+                title: "카리스마 대장 엑셀 반장",
+                desc: "리더십이 엄청나서 모둠 활동을 주도하고 규칙을 지키는 모범생 반장님 스타일이에요! 친구들이 어려워할 때 딱 딱 정리를 잘해 줍니다.",
+                tip: "모둠의 프로젝트 현황이나 숙제 체크 리스트를 엑셀의 '조건부 서식'을 사용해 달성률에 따라 색깔이 샥 변하게 멋진 관리판을 만들 리더입니다.",
+                best: "알록달록 디자인 셀 카멜레온", worst: "상상력 대장 시트 몽상가"
+            },
+            "ESFJ": {
+                avatar: "🐿️",
+                title: "친절한 칭찬 시트 다람쥐",
+                desc: "남을 엄청 잘 배려하고 인기가 아주 많아요! 친구들의 칭찬 한마디에 세상을 다 얻은 것처럼 힘을 내고, 나도 칭찬을 아끼지 않는 착한 천사입니다.",
+                tip: "친구들의 엑셀 화면을 기웃거리며 '우와, 너 진짜 잘한다!' 칭찬 요정이 되어줄 당신. 나중에 친구들에게 엑셀 조작법을 알려주는 최고 친절한 멘토가 됩니다.",
+                best: "뚝딱뚝딱 버그 해결사 도마뱀", worst: "호기심 가득 함수 과학자"
+            },
+            "ENFJ": {
+                avatar: "🦢",
+                title: "모두를 이끄는 그래프 리더",
+                desc: "착하고 정의로우며 주변에 선한 에너지를 뿜어내는 다정다감한 리더예요! 소외되는 친구 없이 모두 다 함께 재미있게 가자는 마음을 품고 있습니다.",
+                tip: "모둠원들의 다양한 생각 데이터를 취합하여, 모두가 알기 쉬운 하나의 예쁜 원형/막대형 그래프 보고서로 요약 정리하는 큰 그림을 그리는 능력을 가졌습니다.",
+                best: "다정한 수식 수호 요정", worst: "뚝딱뚝딱 버그 해결사 도마뱀"
+            },
+            "ENTJ": {
+                avatar: "🐯",
+                title: "완벽주의 마스터 매크로 사자",
+                desc: "비전이 가득하고 의지가 강해 힘든 일도 절대 도망치지 않고 끝까지 마스터해요! 목표가 생기면 밤낮없이 완벽한 결과를 위해 달려나갑니다.",
+                tip: "엑셀의 복잡한 3D 수식 참조나 함수 중첩도 포기하지 않고 해낼 완벽주의자! 반에서 가장 어려운 엑셀 미션 카드를 제일 먼저 달성하는 주인공이 됩니다.",
+                best: "마음을 읽는 차트 마술사", worst: "도전적인 단축키 전사"
+            }
+        };
+
+        // App state
+        let currentQuestionIdx = 0;
+        let userAnswers = []; // Records the answer "A" or "B" for each step
+        
+        // Cumulative dimension scores
+        let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+        // Navigation functions
+        function startTest() {
+            playSound('fanfare');
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('question-screen').classList.remove('hidden');
+            currentQuestionIdx = 0;
+            userAnswers = [];
+            scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            if (currentQuestionIdx >= questions.length) {
+                calculateAndShowResult();
+                return;
+            }
+
+            const qData = questions[currentQuestionIdx];
+            
+            // Text rendering
+            document.getElementById('question-number-text').innerText = `질문 ${currentQuestionIdx + 1} / ${questions.length}`;
+            document.getElementById('question-text').innerText = qData.q;
+            document.getElementById('text-option-a').innerText = qData.a;
+            document.getElementById('text-option-b').innerText = qData.b;
+
+            // Back button toggle
+            const btnBack = document.getElementById('btn-back');
+            if (currentQuestionIdx === 0) {
+                btnBack.style.visibility = 'hidden';
+            } else {
+                btnBack.style.visibility = 'visible';
+            }
+
+            // Progress computations
+            const percent = Math.round((currentQuestionIdx / questions.length) * 100);
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+        }
+
+        function selectAnswer(choice) {
+            playSound('select');
+            userAnswers[currentQuestionIdx] = choice;
+            currentQuestionIdx++;
+            renderQuestion();
+        }
+
+        function goBack() {
+            if (currentQuestionIdx > 0) {
+                playSound('click');
+                currentQuestionIdx--;
+                renderQuestion();
+            }
+        }
+
+        function calculateAndShowResult() {
+            playSound('fanfare');
+            
+            // Reset temp scores
+            scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+            // Calculate score sums
+            for (let i = 0; i < questions.length; i++) {
+                const q = questions[i];
+                const choice = userAnswers[i];
+                const resolvedVal = (choice === 'A') ? q.valueA : q.valueB;
+                scores[resolvedVal]++;
+            }
+
+            // Extract MBTI Code
+            let finalMBTI = "";
+            finalMBTI += (scores["E"] >= scores["I"]) ? "E" : "I";
+            finalMBTI += (scores["S"] >= scores["N"]) ? "S" : "N";
+            finalMBTI += (scores["T"] >= scores["F"]) ? "T" : "F";
+            finalMBTI += (scores["J"] >= scores["P"]) ? "J" : "P";
+
+            const profile = mbtiProfiles[finalMBTI];
+
+            // Render Results on the page
+            document.getElementById('result-avatar').innerText = profile.avatar;
+            document.getElementById('result-mbti-code').innerText = finalMBTI;
+            document.getElementById('result-title').innerText = profile.title;
+            document.getElementById('result-desc').innerText = profile.desc;
+            document.getElementById('result-excel-tip').innerText = profile.tip;
+            document.getElementById('compatibility-best').innerText = profile.best;
+            document.getElementById('compatibility-worst').innerText = profile.worst;
+
+            // Render simulated Excel grid & values
+            // Calculate ratios for the bar charts (Total of 3 questions per dimension)
+            const eiTotal = scores["E"] + scores["I"];
+            const ePercent = Math.round((scores["E"] / eiTotal) * 100);
+            const iPercent = 100 - ePercent;
+            document.getElementById('chart-e').style.width = `${ePercent}%`;
+            document.getElementById('chart-i').style.width = `${iPercent}%`;
+            document.getElementById('score-ei-text').innerText = `E ${ePercent}% / I ${iPercent}%`;
+
+            const snTotal = scores["S"] + scores["N"];
+            const sPercent = Math.round((scores["S"] / snTotal) * 100);
+            const nPercent = 100 - sPercent;
+            document.getElementById('chart-s').style.width = `${sPercent}%`;
+            document.getElementById('chart-n').style.width = `${nPercent}%`;
+            document.getElementById('score-sn-text').innerText = `S ${sPercent}% / N ${nPercent}%`;
+
+            const tfTotal = scores["T"] + scores["F"];
+            const tPercent = Math.round((scores["T"] / tfTotal) * 100);
+            const fPercent = 100 - tPercent;
+            document.getElementById('chart-t').style.width = `${tPercent}%`;
+            document.getElementById('chart-f').style.width = `${fPercent}%`;
+            document.getElementById('score-tf-text').innerText = `T ${tPercent}% / F ${fPercent}%`;
+
+            const jpTotal = scores["J"] + scores["P"];
+            const jPercent = Math.round((scores["J"] / jpTotal) * 100);
+            const pPercent = 100 - jPercent;
+            document.getElementById('chart-j').style.width = `${jPercent}%`;
+            document.getElementById('chart-p').style.width = `${pPercent}%`;
+            document.getElementById('score-jp-text').innerText = `J ${jPercent}% / P ${pPercent}%`;
+
+            // Switch screens
+            document.getElementById('question-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+        }
+
+        function resetTest() {
+            playSound('click');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('question-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+        }
+
+        // Copy Share Text with Clipboard API
+        function copyShareText() {
+            playSound('click');
+            const mbti = document.getElementById('result-mbti-code').innerText;
+            const title = document.getElementById('result-title').innerText;
+            const desc = document.getElementById('result-desc').innerText;
+            
+            const shareText = `[초등 엑셀 탐험대 MBTI] \n\n나의 캐릭터는? [${mbti}] ${title}!\n\n${desc}\n\n곧 있을 즐거운 엑셀 수업 때 만나요! 🚀`;
+
+            // Use execCommand as a robust fallback in iframe-like interactive components
+            const dummyTextArea = document.createElement("textarea");
+            dummyTextArea.value = shareText;
+            document.body.appendChild(dummyTextArea);
+            dummyTextArea.select();
+            try {
+                document.execCommand('copy');
+                showToast("결과가 클립보드에 저장되었어요! 단톡방이나 메모장에 붙여넣기 해보세요.");
+            } catch (err) {
+                console.error("복사 실패", err);
+                showToast("복사하기를 실패했어요. 브라우저 설정을 확인해 주세요!");
+            }
+            document.body.removeChild(dummyTextArea);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // On document load setup
+        window.onload = function () {
+            console.log("App loaded successfully!");
+        }
+    </script>
+</body>
+</html>
